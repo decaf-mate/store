@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  store:
+    image: elixir:1.18.3-otp-27-alpine
+    container_name: store_app
+    working_dir: /app
+    volumes:
+      - .:/app
+      - deps:/app/deps
+      - build:/app/_build
+    ports:
+      - "4000:4000"
+    environment:
+      - MIX_ENV=dev
+    command: sh -c "mix deps.get && mix compile && iex -S mix"
+    stdin_open: true
+    tty: true
+
+volumes:
+  deps:
+  build:
