@@ -106,6 +106,7 @@ iex> Store.hello()
 - **Version Management:** This project uses asdf or mise with versions specified in `.tool-versions`
 - **Elixir Version:** 1.18.3
 - **Erlang/OTP Version:** 27.1.2
+- **CI/CD:** GitHub Actions automatically runs tests and format checks on push/PR
 
 ### Running Tests
 
@@ -119,3 +120,11 @@ mix test
 docker-compose exec store mix test
 ```
 
+### Code Formatting
+
+**Auto-format code:**
+```bash
+mix format
+```
+
+**Note:** The CI pipeline will fail if code is not properly formatted.
