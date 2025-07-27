@@ -5,7 +5,7 @@ defmodule Store.Product do
   @type t :: %__MODULE__{
           id: pos_integer(),
           name: String.t(),
-          price: number(),
+          price: integer(),
           quantity: non_neg_integer()
         }
 

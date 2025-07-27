@@ -28,8 +28,8 @@ defmodule Store.Checkout do
   defp calculate_total(%Cart{product_items: product_items} = cart) do
     total =
       product_items
-      |> Enum.reduce(0.0, fn %ProductItem{product: %Product{price: price}, quantity: quantity},
-                             acc ->
+      |> Enum.reduce(0, fn %ProductItem{product: %Product{price: price}, quantity: quantity},
+                           acc ->
         acc + price * quantity
       end)
 
