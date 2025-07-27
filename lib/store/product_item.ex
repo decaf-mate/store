@@ -6,10 +6,11 @@ defmodule Store.ProductItem do
   """
 
   @enforce_keys [:product, :quantity]
-  defstruct [:product, :quantity]
+  defstruct [:product, :quantity, :discounted_price]
 
   @type t :: %__MODULE__{
           product: Store.Product.t(),
-          quantity: non_neg_integer()
+          quantity: non_neg_integer(),
+          discounted_price: integer() | nil
         }
 end
