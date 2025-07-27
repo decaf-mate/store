@@ -1,6 +1,17 @@
 # Store
 
-A basic Elixir application.
+A toy store application.
+
+## Assumptions
+
+This projects solves only the problems proposed. Which the reading of author was *how to structure discounts in a way that it can scale* and *money conversion without losing money*.
+
+It doesn't tries to solve a miriad of problems that comes with building an ecommerce.
+
+- Stock
+- Product Variants
+- Multi Currency
+- Cart project
 
 ## Prerequisites
 
@@ -119,12 +130,3 @@ mix test
 ```bash
 docker-compose exec store mix test
 ```
-
-### Code Formatting
-
-**Auto-format code:**
-```bash
-mix format
-```
-
-**Note:** The CI pipeline will fail if code is not properly formatted.

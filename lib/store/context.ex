@@ -1,12 +1,12 @@
-defmodule Store do
+defmodule Store.Context do
   @moduledoc """
-  A toy store application.
+  A context for the store application.
   """
 
-  defstruct [:products, :discounts]
+  @enforce_keys [:discounts]
+  defstruct [:discounts]
 
   @type t :: %__MODULE__{
-          products: list(Store.Product.t()),
           discounts: list(Store.Discounts.DiscountBehaviour.t())
         }
 end
