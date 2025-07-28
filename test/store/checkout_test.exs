@@ -82,7 +82,11 @@ defmodule Store.CheckoutTest do
     # TODO: add a test for multiple discounts
     test "adds product with discount" do
       cart = Checkout.new_cart()
-      context = %Context{discounts: [%ProductPercentDiscount{percentage: 10, product_id: 1}]}
+
+      context = %Context{
+        discounts: [%ProductPercentDiscount{percentage: 10, product_id: 1, minimum_quantity: 1}]
+      }
+
       product = %Product{id: 1, name: "Apple", price: 100, quantity: 1}
       quantity = 1
 

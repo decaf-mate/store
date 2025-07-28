@@ -1,17 +1,19 @@
 defmodule Store.Discounts.ProductPercentDiscount do
   @moduledoc """
-  A product percent discount. Applies a percentage discount to a product item.
+  Applies a percentage discount to a product item if it has the given product_id and quantity.
   """
 
+  # TODO: fix quantity check
   alias Store.{ProductItem, Product}
   @behaviour Store.Discounts.DiscountBehaviour
 
-  @enforce_keys [:percentage, :product_id]
-  defstruct [:percentage, :product_id]
+  @enforce_keys [:percentage, :product_id, :minimum_quantity]
+  defstruct [:percentage, :product_id, :minimum_quantity]
 
   @type t :: %__MODULE__{
           percentage: integer(),
-          product_id: String.t()
+          product_id: String.t(),
+          minimum_quantity: non_neg_integer()
         }
 
   @impl Store.Discounts.DiscountBehaviour
@@ -19,9 +21,19 @@ defmodule Store.Discounts.ProductPercentDiscount do
     apply_discount(discount, product_items)
   end
 
-  defp apply_discount(%__MODULE__{percentage: percentage, product_id: product_id}, [
-         %ProductItem{product: %Product{id: product_id, price: price}} = product_item | rest
-       ]) do
+  defp apply_discount(
+         %__MODULE__{
+           percentage: percentage,
+           product_id: product_id,
+           minimum_quantity: minimum_quantity
+         },
+         [
+           %ProductItem{product: %Product{id: product_id, price: price}, quantity: quantity} =
+             product_item
+           | rest
+         ]
+       )
+       when quantity >= minimum_quantity do
     discounted_price = calculate_discounted_price(price, percentage)
     [%ProductItem{product_item | discounted_price: discounted_price} | rest]
   end
