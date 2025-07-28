@@ -4,22 +4,19 @@ defmodule Store.Discounts.ProductFixedDiscountTest do
   doctest Store.Discounts.ProductFixedDiscount
 
   alias Store.Discounts.ProductFixedDiscount, as: Discount
-  alias Store.{ProductItem, Product}
+  alias Store.{Product, ProductItem}
+
+  import Store.Test.Fixtures
 
   describe "apply/2" do
     test "applies a fixed discount to a product item" do
       discount = %Discount{fixed_discount: 10, product_id: "1", minimum_quantity: 1}
 
-      product_items = [
-        %ProductItem{
-          product: %Product{id: "1", price: 100, name: "Apple"},
-          quantity: 1
-        }
-      ]
+      product_items = [build_product_item()]
 
       assert Discount.apply(discount, product_items) == [
                %ProductItem{
-                 product: %Product{id: "1", price: 100, name: "Apple"},
+                 product: %Product{id: "1", name: "Apple", price: 100},
                  quantity: 1,
                  discounted_price: 90
                }
@@ -30,10 +27,7 @@ defmodule Store.Discounts.ProductFixedDiscountTest do
       discount = %Discount{fixed_discount: 10, product_id: "1", minimum_quantity: 1}
 
       product_items = [
-        %ProductItem{
-          product: %Product{id: "2", price: 100, name: "Apple"},
-          quantity: 1
-        }
+        build_product_item(%{product: %{id: "2"}})
       ]
 
       assert Discount.apply(discount, product_items) == product_items
@@ -42,44 +36,27 @@ defmodule Store.Discounts.ProductFixedDiscountTest do
     test "does not apply a fixed discount if the product item does not reach the minimum quantity" do
       discount = %Discount{fixed_discount: 10, product_id: "1", minimum_quantity: 2}
 
-      product_items = [
-        %ProductItem{
-          product: %Product{id: "1", price: 100, name: "Apple"},
-          quantity: 1
-        }
-      ]
+      product_items = [build_product_item()]
 
-      assert Discount.apply(discount, product_items) == [
-               %ProductItem{
-                 product: %Product{id: "1", price: 100, name: "Apple"},
-                 quantity: 1,
-                 discounted_price: nil
-               }
-             ]
+      assert Discount.apply(discount, product_items) == product_items
     end
 
     test "applies a fixed discount to the correct product item for multiple product items" do
       discount = %Discount{fixed_discount: 10, product_id: "1", minimum_quantity: 1}
 
       product_items = [
-        %ProductItem{
-          product: %Product{id: "1", price: 100, name: "Apple"},
-          quantity: 1
-        },
-        %ProductItem{
-          product: %Product{id: "2", price: 200, name: "Banana"},
-          quantity: 1
-        }
+        build_product_item(),
+        build_product_item(%{product: %{id: "2", name: "Banana", price: 200}})
       ]
 
       assert Discount.apply(discount, product_items) == [
                %ProductItem{
-                 product: %Product{id: "1", price: 100, name: "Apple"},
+                 product: %Product{id: "1", name: "Apple", price: 100},
                  quantity: 1,
                  discounted_price: 90
                },
                %ProductItem{
-                 product: %Product{id: "2", price: 200, name: "Banana"},
+                 product: %Product{id: "2", name: "Banana", price: 200},
                  quantity: 1,
                  discounted_price: nil
                }

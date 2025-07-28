@@ -3,7 +3,7 @@ defmodule Store.Product do
   defstruct [:id, :name, :price]
 
   @type t :: %__MODULE__{
-          id: pos_integer(),
+          id: String.t(),
           name: String.t(),
           price: integer()
         }
