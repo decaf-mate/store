@@ -12,14 +12,14 @@ defmodule Store.Discounts.ProductPercentDiscountTest do
 
       product_items = [
         %ProductItem{
-          product: %Product{id: "1", price: 100, name: "Apple", quantity: 1},
+          product: %Product{id: "1", price: 100, name: "Apple"},
           quantity: 1
         }
       ]
 
       assert Discount.apply(discount, product_items) == [
                %ProductItem{
-                 product: %Product{id: "1", price: 100, name: "Apple", quantity: 1},
+                 product: %Product{id: "1", price: 100, name: "Apple"},
                  quantity: 1,
                  discounted_price: 90
                }
@@ -31,7 +31,7 @@ defmodule Store.Discounts.ProductPercentDiscountTest do
 
       product_items = [
         %ProductItem{
-          product: %Product{id: "2", price: 100, name: "Apple", quantity: 1},
+          product: %Product{id: "2", price: 100, name: "Apple"},
           quantity: 1
         }
       ]
@@ -44,7 +44,7 @@ defmodule Store.Discounts.ProductPercentDiscountTest do
 
       product_items = [
         %ProductItem{
-          product: %Product{id: "1", price: 100, name: "Apple", quantity: 1},
+          product: %Product{id: "1", price: 100, name: "Apple"},
           quantity: 1
         }
       ]
@@ -57,23 +57,23 @@ defmodule Store.Discounts.ProductPercentDiscountTest do
 
       product_items = [
         %ProductItem{
-          product: %Product{id: "1", price: 100, name: "Apple", quantity: 1},
+          product: %Product{id: "1", price: 100, name: "Apple"},
           quantity: 1
         },
         %ProductItem{
-          product: %Product{id: "2", price: 200, name: "Banana", quantity: 1},
+          product: %Product{id: "2", price: 200, name: "Banana"},
           quantity: 1
         }
       ]
 
       assert Discount.apply(discount, product_items) == [
                %ProductItem{
-                 product: %Product{id: "1", price: 100, name: "Apple", quantity: 1},
+                 product: %Product{id: "1", price: 100, name: "Apple"},
                  quantity: 1,
                  discounted_price: 90
                },
                %ProductItem{
-                 product: %Product{id: "2", price: 200, name: "Banana", quantity: 1},
+                 product: %Product{id: "2", price: 200, name: "Banana"},
                  quantity: 1,
                  discounted_price: nil
                }
