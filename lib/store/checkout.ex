@@ -23,7 +23,11 @@ defmodule Store.Checkout do
     %Cart{cart | product_items: new_product_items}
   end
 
-  defp add_or_update_product_item([%ProductItem{product: %Product{id: product_id}} = product_item | rest], %Product{id: product_id}, quantity) do
+  defp add_or_update_product_item(
+         [%ProductItem{product: %Product{id: product_id}} = product_item | rest],
+         %Product{id: product_id},
+         quantity
+       ) do
     [%{product_item | quantity: product_item.quantity + quantity} | rest]
   end
 
