@@ -79,6 +79,26 @@ defmodule Store.CheckoutTest do
                |> Checkout.add_product(context, another_product, 1)
     end
 
+    test "adds multiple same product_id multiple times" do
+      cart = Checkout.new_cart()
+      context = %Context{discounts: []}
+      product = build_product(%{id: "1", name: "Apple", price: 100})
+
+      assert %Cart{
+               id: _id,
+               product_items: [
+                 %ProductItem{
+                   product: %Product{id: "1", name: "Apple", price: 100},
+                   quantity: 2
+                 }
+               ],
+               total: 200
+             } =
+               cart
+               |> Checkout.add_product(context, product, 1)
+               |> Checkout.add_product(context, product, 1)
+    end
+
     # TODO: replace with a mock discount
     # TODO: add a test for multiple discounts
     test "adds product with discount" do

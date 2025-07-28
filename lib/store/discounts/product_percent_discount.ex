@@ -1,9 +1,12 @@
 defmodule Store.Discounts.ProductPercentDiscount do
   @moduledoc """
-  Applies a percentage discount to a product item if it has the given product_id and quantity.
+  Applies a percentage discount to a product item.
+
+  Required rules:
+  - The product item must have the given product_id
+  - The product item must have a quantity greater than or equal to the minimum quantity
   """
 
-  # TODO: fix quantity check
   alias Store.{ProductItem, Product}
   @behaviour Store.Discounts.DiscountBehaviour
 

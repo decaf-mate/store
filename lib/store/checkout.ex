@@ -17,10 +17,22 @@ defmodule Store.Checkout do
     |> calculate_total()
   end
 
-  defp add_item(%Cart{product_items: product_items} = cart, %Product{} = product, quantity) do
-    product_item = %ProductItem{product: product, quantity: quantity}
+  defp add_item(%Cart{product_items: product_items} = cart, product, quantity) do
+    new_product_items = Enum.reverse(add_or_update_product_item(product_items, product, quantity))
 
-    %Cart{cart | product_items: [product_item | product_items]}
+    %Cart{cart | product_items: new_product_items}
+  end
+
+  defp add_or_update_product_item([%ProductItem{product: %Product{id: product_id}} = product_item | rest], %Product{id: product_id}, quantity) do
+    [%{product_item | quantity: product_item.quantity + quantity} | rest]
+  end
+
+  defp add_or_update_product_item([product_item | rest], product, quantity) do
+    [product_item | add_or_update_product_item(rest, product, quantity)]
+  end
+
+  defp add_or_update_product_item([], product, quantity) do
+    [%ProductItem{product: product, quantity: quantity}]
   end
 
   defp apply_discounts(%Cart{product_items: product_items} = cart, [

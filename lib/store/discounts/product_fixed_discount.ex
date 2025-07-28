@@ -1,8 +1,10 @@
 defmodule Store.Discounts.ProductFixedDiscount do
   @moduledoc """
-  Applies a fixed discount to a product item if it has the given product_id.
+  Applies a fixed discount to a product item.
 
-  The discount is only applied after the product item has passed the minimum quantity.
+  Required rules:
+  - The product item must have the given product_id
+  - The product item must have a quantity greater than or equal to the minimum quantity
   """
 
   alias Store.{ProductItem, Product}
