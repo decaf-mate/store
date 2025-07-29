@@ -32,12 +32,12 @@ defmodule Store.Discounts.ProductFixedDiscount do
          ]
        )
        when quantity >= minimum_quantity do
-    discounted_price = product_item.product.price - discount.fixed_discount
+    discounted_price = (product_item.product.price - discount.fixed_discount) * quantity
     [%{product_item | discounted_price: discounted_price} | rest]
   end
 
-  defp apply_discount(_discount, [product_item | rest]) do
-    [product_item | rest]
+  defp apply_discount(discount, [product_item | rest]) do
+    [product_item | apply_discount(discount, rest)]
   end
 
   defp apply_discount(_discount, []) do

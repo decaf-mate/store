@@ -10,7 +10,7 @@ defmodule Store.Discounts.ProductPercentDiscountTest do
 
   describe "apply/2" do
     test "applies a percent discount to a product item" do
-      discount = %Discount{percentage: 10, product_id: "1", minimum_quantity: 1}
+      discount = %Discount{percentage: 0.1, product_id: "1", minimum_quantity: 1}
 
       product_items = [
         build_product_item()
@@ -27,7 +27,7 @@ defmodule Store.Discounts.ProductPercentDiscountTest do
     end
 
     test "does not apply a percent discount if the product item does not have the given product_id" do
-      discount = %Discount{percentage: 10, product_id: "1", minimum_quantity: 1}
+      discount = %Discount{percentage: 0.1, product_id: "1", minimum_quantity: 1}
 
       product_items = [
         build_product_item(%{product: %{id: "2"}})
@@ -37,7 +37,7 @@ defmodule Store.Discounts.ProductPercentDiscountTest do
     end
 
     test "does not apply a percent discount if the product item does not reach the minimum quantity" do
-      discount = %Discount{percentage: 10, product_id: "1", minimum_quantity: 2}
+      discount = %Discount{percentage: 0.1, product_id: "1", minimum_quantity: 2}
 
       product_items = [build_product_item()]
 
@@ -45,7 +45,7 @@ defmodule Store.Discounts.ProductPercentDiscountTest do
     end
 
     test "applies a percent discount to the correct product item for multiple product items" do
-      discount = %Discount{percentage: 10, product_id: "1", minimum_quantity: 1}
+      discount = %Discount{percentage: 0.1, product_id: "1", minimum_quantity: 1}
 
       product_items = [
         build_product_item(),
@@ -69,7 +69,7 @@ defmodule Store.Discounts.ProductPercentDiscountTest do
     end
 
     test "does nothing to empty product items" do
-      discount = %Discount{percentage: 10, product_id: "1", minimum_quantity: 1}
+      discount = %Discount{percentage: 0.1, product_id: "1", minimum_quantity: 1}
       product_items = []
 
       assert Discount.apply(discount, product_items) == []

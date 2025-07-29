@@ -35,6 +35,20 @@ defmodule Store.Discounts.FreeItemDiscountTest do
              ]
     end
 
+    test "applies a free item discount to a product item with an odd quantity" do
+      discount = %Discount{product_id: "1", minimum_quantity: 1}
+      product_items = [build_product_item(%{quantity: 3})]
+
+      assert Discount.apply(discount, product_items) == [
+               %ProductItem{
+                 product: %Product{id: "1", name: "Apple", price: 100},
+                 quantity: 3,
+                 original_price: 300,
+                 discounted_price: 200
+               }
+             ]
+    end
+
     test "does not apply a free item discount if the product item does not have the given product_id" do
       discount = %Discount{product_id: "1", minimum_quantity: 1}
 

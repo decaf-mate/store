@@ -8,8 +8,7 @@ defmodule Store.Checkout do
   @doc """
   Adds a product to the cart.
   """
-  @spec add_product(Cart.t(), Context.t(), Product.t(), non_neg_integer()) ::
-          {:ok, Cart.t()} | {:error, String.t()}
+  @spec add_product(Cart.t(), Context.t(), Product.t(), non_neg_integer()) :: Cart.t()
   def add_product(%Cart{} = cart, %Context{discounts: discounts}, product, quantity \\ 1) do
     cart
     |> add_item(product, quantity)

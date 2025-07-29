@@ -32,7 +32,7 @@ defmodule Store.Discounts.FreeItemDiscount do
          ]
        )
        when quantity > minimum_quantity do
-    discounted_price = div(quantity, 2) * price
+    discounted_price = calculate_discounted_price(quantity, price)
     [%{product_item | discounted_price: discounted_price} | rest]
   end
 
@@ -42,5 +42,13 @@ defmodule Store.Discounts.FreeItemDiscount do
 
   defp apply_discount(_discount, []) do
     []
+  end
+
+  defp calculate_discounted_price(quantity, price) when rem(quantity, 2) == 0 do
+    div(quantity, 2) * price
+  end
+
+  defp calculate_discounted_price(quantity, price) do
+    div(quantity, 2) * price + price
   end
 end
