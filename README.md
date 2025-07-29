@@ -2,38 +2,123 @@
 
 A toy store application.
 
-## Assumptions
+## Overview
 
-This projects solves only the problems proposed. Which the reading of author was *how to structure discounts in a way that it can scale* and *money conversion without losing money*.
+This project solves only the problems proposed. The author's reading was **how to structure discounts in a way that it can scale** and **money conversion to minimize rounding errors**.
 
-It doesn't tries to solve a miriad of problems that comes with building an ecommerce.
+- It uses integers to represent values in cents, in order to minimize rounding errors.
+- It implements discounts as a `behaviour` in order to make it easily extensible.
+- Products put in the checkout cart are converted to product items.
+
+### Tests
+
+- **Store requirement tests**: [store_test.exs](test/store/store_test.exs)
+- **Unit tests for discounts**:
+  - [product_fixed_discount_test.exs](test/store/discounts/product_fixed_discount_test.exs)
+  - [product_percent_discount_test.exs](test/store/discounts/product_percent_discount_test.exs)
+  - [free_product_discount_test.exs](test/store/discounts/free_product_discount_test.exs)
+- **Unit tests for checkout cart**: [checkout_test.exs](test/store/checkout_test.exs)
+
+
+### Diagram
+
+```mermaid
+classDiagram
+    class Product {
+        +String id
+        +String name
+        +integer price
+        +new(map) Product
+    }
+
+    class ProductItem {
+        +Product product
+        +non_neg_integer quantity
+        +integer original_price
+        +integer discounted_price
+    }
+
+    class Cart {
+        +String id
+        +list product_items
+        +integer total
+        +new() Cart
+    }
+
+    class Context {
+        +list discounts
+    }
+
+    class DiscountBehaviour {
+        <<behaviour>>
+        +apply(struct, list) list
+    }
+
+    class ProductFixedDiscount {
+        +integer fixed_discount
+        +String product_id
+        +non_neg_integer minimum_quantity
+        +apply(discount, product_items) list
+    }
+
+    class ProductPercentDiscount {
+        +float percentage
+        +String product_id
+        +non_neg_integer minimum_quantity
+        +apply(discount, product_items) list
+    }
+
+    class FreeItemDiscount {
+        +String product_id
+        +non_neg_integer minimum_quantity
+        +apply(discount, product_items) list
+    }
+
+    class Checkout {
+        <<service>>
+        +new_cart() Cart
+        +add_product(Cart, Context, Product) Cart
+    }
+
+    Cart "1" --> "*" ProductItem : contains
+    ProductItem "1" --> "1" Product : references
+    Context "1" --> "*" DiscountBehaviour : contains
+
+    DiscountBehaviour <|-- ProductFixedDiscount
+    DiscountBehaviour <|-- ProductPercentDiscount
+    DiscountBehaviour <|-- FreeItemDiscount
+
+    Checkout ..> Cart : uses
+    Checkout ..> Context : uses
+    Checkout ..> Product : uses
+```
+
+### What it does not cover
+
+It doesn't try to solve a myriad of problems that come with building an ecommerce:
 
 - Stock
 - Product Variants
 - Multi Currency
-- Cart project
+- Cart lifecycle
 
 ## Prerequisites
 
 ### Option 1: Native Development (without Docker)
 
-Choose one of the following version managers:
+Choose a version manager and install plugins:
 
-#### Using asdf
-- [asdf](https://asdf-vm.com/) version manager
-- Install required plugins:
-  ```bash
-  asdf plugin add erlang
-  asdf plugin add elixir
-  ```
+**[asdf](https://asdf-vm.com/):**
+```bash
+asdf plugin add erlang
+asdf plugin add elixir
+```
 
-#### Using mise
-- [mise](https://mise.jdx.dev/) version manager
-- Install required plugins:
-  ```bash
-  mise plugin install erlang
-  mise plugin install elixir
-  ```
+**[mise](https://mise.jdx.dev/):**
+```bash
+mise plugin install erlang
+mise plugin install elixir
+```
 
 ### Option 2: Docker Development
 
@@ -44,15 +129,12 @@ Choose one of the following version managers:
 
 ### Native Development (without Docker)
 
-1. **Install dependencies using your chosen version manager:**
-
-   **With asdf:**
+1. **Install dependencies:**
    ```bash
+   # With asdf:
    asdf install
-   ```
 
-   **With mise:**
-   ```bash
+   # With mise:
    mise install
    ```
 
@@ -108,16 +190,9 @@ Choose one of the following version managers:
 Once the application is running (either natively or in Docker), you can test it:
 
 ```elixir
-iex> Store.hello()
-:world
+iex> Store.Checkout.new_cart()
+%Store.Cart{id: "abc12", product_items: [], total: 0}
 ```
-
-## Development
-
-- **Version Management:** This project uses asdf or mise with versions specified in `.tool-versions`
-- **Elixir Version:** 1.18.3
-- **Erlang/OTP Version:** 27.1.2
-- **CI/CD:** GitHub Actions automatically runs tests and format checks on push/PR
 
 ### Running Tests
 
