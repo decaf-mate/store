@@ -45,15 +45,15 @@ defmodule Store.Checkout do
     [%ProductItem{product: product, quantity: quantity, original_price: price * quantity}]
   end
 
-  defp apply_discounts(%Cart{product_items: product_items} = cart, [
-         %discount_module{} = discount | rest
-       ]) do
-    discounted_product_items = discount_module.apply(discount, product_items)
-    apply_discounts(%Cart{cart | product_items: discounted_product_items}, rest)
-  end
+  defp apply_discounts(%Cart{product_items: product_items} = cart, discounts) do
+    discounted_product_items =
+      discounts
+      |> Enum.reduce(product_items, fn %discount_module{} = discount, acc ->
+        discount_module.apply(discount, acc)
+      end)
+      |> Enum.reverse()
 
-  defp apply_discounts(cart, []) do
-    cart
+    %Cart{cart | product_items: discounted_product_items}
   end
 
   defp calculate_total(%Cart{product_items: product_items} = cart) do
