@@ -10,7 +10,7 @@ defmodule Store.Checkout do
   """
   @spec add_product(Cart.t(), Context.t(), Product.t(), non_neg_integer()) ::
           {:ok, Cart.t()} | {:error, String.t()}
-  def add_product(%Cart{} = cart, %Context{discounts: discounts}, product, quantity) do
+  def add_product(%Cart{} = cart, %Context{discounts: discounts}, product, quantity \\ 1) do
     cart
     |> add_item(product, quantity)
     |> apply_discounts(discounts)
@@ -24,19 +24,25 @@ defmodule Store.Checkout do
   end
 
   defp add_or_update_product_item(
-         [%ProductItem{product: %Product{id: product_id}} = product_item | rest],
+         [%ProductItem{product: %Product{id: product_id, price: price}} = product_item | rest],
          %Product{id: product_id},
          quantity
        ) do
-    [%{product_item | quantity: product_item.quantity + quantity} | rest]
+    new_quantity = product_item.quantity + quantity
+    new_original_price = product_item.original_price + price * quantity
+
+    [
+      %ProductItem{product_item | quantity: new_quantity, original_price: new_original_price}
+      | rest
+    ]
   end
 
   defp add_or_update_product_item([product_item | rest], product, quantity) do
     [product_item | add_or_update_product_item(rest, product, quantity)]
   end
 
-  defp add_or_update_product_item([], product, quantity) do
-    [%ProductItem{product: product, quantity: quantity}]
+  defp add_or_update_product_item([], %Product{price: price} = product, quantity) do
+    [%ProductItem{product: product, quantity: quantity, original_price: price * quantity}]
   end
 
   defp apply_discounts(%Cart{product_items: product_items} = cart, [
@@ -52,26 +58,14 @@ defmodule Store.Checkout do
 
   defp calculate_total(%Cart{product_items: product_items} = cart) do
     total =
-      product_items
-      |> Enum.reduce(0, fn product_item, acc ->
-        acc + calculate_product_item_total(product_item)
+      Enum.reduce(product_items, 0, fn
+        %ProductItem{discounted_price: discounted_price}, acc when not is_nil(discounted_price) ->
+          acc + discounted_price
+
+        %ProductItem{original_price: original_price}, acc ->
+          acc + original_price
       end)
 
     %Cart{cart | total: total}
-  end
-
-  defp calculate_product_item_total(%ProductItem{
-         discounted_price: discounted_price,
-         quantity: quantity
-       })
-       when not is_nil(discounted_price) do
-    discounted_price * quantity
-  end
-
-  defp calculate_product_item_total(%ProductItem{
-         product: %Product{price: price},
-         quantity: quantity
-       }) do
-    price * quantity
   end
 end

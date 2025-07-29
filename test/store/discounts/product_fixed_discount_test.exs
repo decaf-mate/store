@@ -18,7 +18,8 @@ defmodule Store.Discounts.ProductFixedDiscountTest do
                %ProductItem{
                  product: %Product{id: "1", name: "Apple", price: 100},
                  quantity: 1,
-                 discounted_price: 90
+                 discounted_price: 90,
+                 original_price: 100
                }
              ]
     end
@@ -53,12 +54,14 @@ defmodule Store.Discounts.ProductFixedDiscountTest do
                %ProductItem{
                  product: %Product{id: "1", name: "Apple", price: 100},
                  quantity: 1,
-                 discounted_price: 90
+                 discounted_price: 90,
+                 original_price: 100
                },
                %ProductItem{
                  product: %Product{id: "2", name: "Banana", price: 200},
                  quantity: 1,
-                 discounted_price: nil
+                 discounted_price: nil,
+                 original_price: 200
                }
              ]
     end

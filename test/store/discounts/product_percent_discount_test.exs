@@ -20,6 +20,7 @@ defmodule Store.Discounts.ProductPercentDiscountTest do
                %ProductItem{
                  product: %Product{id: "1", name: "Apple", price: 100},
                  quantity: 1,
+                 original_price: 100,
                  discounted_price: 90
                }
              ]
@@ -38,9 +39,7 @@ defmodule Store.Discounts.ProductPercentDiscountTest do
     test "does not apply a percent discount if the product item does not reach the minimum quantity" do
       discount = %Discount{percentage: 10, product_id: "1", minimum_quantity: 2}
 
-      product_items = [
-        build_product_item()
-      ]
+      product_items = [build_product_item()]
 
       assert Discount.apply(discount, product_items) == product_items
     end
@@ -57,11 +56,13 @@ defmodule Store.Discounts.ProductPercentDiscountTest do
                %ProductItem{
                  product: %Product{id: "1", price: 100, name: "Apple"},
                  quantity: 1,
+                 original_price: 100,
                  discounted_price: 90
                },
                %ProductItem{
                  product: %Product{id: "2", price: 200, name: "Banana"},
                  quantity: 1,
+                 original_price: 200,
                  discounted_price: nil
                }
              ]

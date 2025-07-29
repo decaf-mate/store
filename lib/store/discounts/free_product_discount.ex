@@ -26,17 +26,18 @@ defmodule Store.Discounts.FreeItemDiscount do
   defp apply_discount(
          %__MODULE__{product_id: product_id, minimum_quantity: minimum_quantity},
          [
-           %ProductItem{product: %Product{id: product_id}, quantity: quantity} = product_item
+           %ProductItem{product: %Product{id: product_id, price: price}, quantity: quantity} =
+             product_item
            | rest
          ]
        )
-       when quantity >= minimum_quantity do
-    new_quantity = quantity * 2
-    [%{product_item | quantity: new_quantity} | rest]
+       when quantity > minimum_quantity do
+    discounted_price = div(quantity, 2) * price
+    [%{product_item | discounted_price: discounted_price} | rest]
   end
 
-  defp apply_discount(_discount, [product_item | rest]) do
-    [product_item | rest]
+  defp apply_discount(discount, [product_item | rest]) do
+    [product_item | apply_discount(discount, rest)]
   end
 
   defp apply_discount(_discount, []) do

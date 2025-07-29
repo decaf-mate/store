@@ -52,9 +52,13 @@ defmodule Store.Test.Fixtures do
   def build_product_item(overrides \\ %{}) do
     {product_overrides, item_overrides} = Map.pop(overrides, :product, %{})
 
+    product = build_product(product_overrides)
+    quantity = Map.get(item_overrides, :quantity, 1)
+
     default_attrs = %{
-      product: build_product(product_overrides),
-      quantity: 1,
+      product: product,
+      quantity: quantity,
+      original_price: product.price * quantity,
       discounted_price: nil
     }
 
@@ -63,6 +67,7 @@ defmodule Store.Test.Fixtures do
     %ProductItem{
       product: attrs.product,
       quantity: attrs.quantity,
+      original_price: attrs.original_price,
       discounted_price: attrs.discounted_price
     }
   end
